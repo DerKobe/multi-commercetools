@@ -1,0 +1,47 @@
+{
+  "name": "multi-commercetools",
+  "version": "0.0.1",
+  "description": "Abstraction layer for working with multiple Commercetools projects in parallel.",
+  "main": "index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "build": "tsc",
+    "patch-release": "npm version patch && npm publish",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DerKobe/multi-commercetools.git"
+  },
+  "keywords": [
+    "commercetools"
+  ],
+  "author": "Philip Claren <philip@claren.io>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DerKobe/multi-commercetools/issues"
+  },
+  "homepage": "https://github.com/DerKobe/multi-commercetools#readme",
+  "devDependencies": {
+    "@types/node": "^11.13.11",
+    "backend-tslint-rules": "1.12.1",
+    "prettier": "^1.17.1",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "@commercetools/api-request-builder": "^5.1.0",
+    "@commercetools/sdk-client": "^2.1.0",
+    "@commercetools/sdk-middleware-auth": "^5.1.0",
+    "@commercetools/sdk-middleware-http": "^5.2.0",
+    "@commercetools/sdk-middleware-queue": "^2.1.0",
+    "node-fetch": "^2.6.0"
+  }
+}
