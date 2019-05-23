@@ -2,7 +2,7 @@
   "name": "multi-commercetools",
   "version": "0.0.1",
   "description": "Abstraction layer for working with multiple Commercetools projects in parallel.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",

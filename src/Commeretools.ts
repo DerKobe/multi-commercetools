@@ -23,9 +23,9 @@ export class Commercetools {
   public locale: string;
 
   private readonly config: ICommercetoolsConfig;
-  private client: any;
-  private request: any;
-  private headers: any;
+  private client;
+  private request;
+  private headers;
 
   constructor(config: ICommercetoolsConfig) {
     this.config = config;
