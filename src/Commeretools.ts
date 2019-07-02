@@ -30,7 +30,7 @@ export class Commercetools {
   constructor(getConfig: () => Promise<ICommercetoolsConfig>) {
     this.getConfig = getConfig;
   }
-git commit -m ''
+
   public async initClient(): Promise<any> {
     if (this.client) { return; }
 
