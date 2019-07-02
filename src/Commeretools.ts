@@ -20,24 +20,24 @@ interface ICommercetoolsConfig {
 }
 
 export class Commercetools {
-  public locale: string;
+  public locale: string | undefined;
 
-  private readonly config: ICommercetoolsConfig;
+  private readonly getConfig: () => Promise<ICommercetoolsConfig>;
   private client;
   private request;
   private headers;
 
-  constructor(config: ICommercetoolsConfig) {
-    this.config = config;
-    this.locale = config.locale;
+  constructor(getConfig: () => Promise<ICommercetoolsConfig>) {
+    this.getConfig = getConfig;
   }
-
+git commit -m ''
   public async initClient(): Promise<any> {
-    if (this.client) {
-      return;
-    }
+    if (this.client) { return; }
 
-    const { projectKey, clientId, clientSecret, concurrency, locale, apiHost, authHost } = this.config;
+    const config = await this.getConfig();
+    const { projectKey, clientId, clientSecret, concurrency, locale, apiHost, authHost } = config;
+
+    this.locale = locale;
 
     const httpMiddleware = createHttpMiddleware({ host: apiHost, fetch });
     const queueMiddleware = createQueueMiddleware({ concurrency });

@@ -9,12 +9,12 @@ interface ICommercetoolsConfig {
     apiHost: string;
 }
 export declare class Commercetools {
-    locale: string;
-    private readonly config;
+    locale: string | undefined;
+    private readonly getConfig;
     private client;
     private request;
     private headers;
-    constructor(config: ICommercetoolsConfig);
+    constructor(getConfig: () => Promise<ICommercetoolsConfig>);
     initClient(): Promise<any>;
     resolveKeyAndVersion(keyOrEntity: string | Entity, fetchByKey: Function): Promise<Entity>;
     fetchExpandedOrder(id: string): Promise<any>;
