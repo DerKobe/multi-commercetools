@@ -82,7 +82,7 @@ export class Commercetools {
 
   // --- Orders --- //
 
-  public async fetchExpandedOrder(id: string): Promise<any> {
+  public async fetchExpandedOrder(id: string): Promise<any> { // TODO define Order interface
     await this.initClient();
 
     const uri = (
@@ -94,6 +94,9 @@ export class Commercetools {
         .expand('lineItems[*].distributionChannel')
         .expand('lineItems[*].variant.attributes[*].value')
         .expand('custom.fields.permissions')
+        .expand('custom.fields.payment')
+        .expand('custom.fields.employeeData')
+        .expand('custom.fields.auth')
         .build()
     );
 
@@ -104,6 +107,38 @@ export class Commercetools {
     };
 
     return this.client.execute(fetchRequest).then(({ body: order }) => order);
+  }
+
+  public async fetchExpandedOrders(page: number, perPage: number): Promise<PagedQueryResult> {
+    await this.initClient();
+
+    const uri = (
+      this.request()
+        .orders
+        .expand('lineItems[*].productType')
+        .expand('lineItems[*].supplyChannel')
+        .expand('lineItems[*].distributionChannel')
+        .expand('lineItems[*].variant.attributes[*].value')
+        .expand('custom.fields.permissions')
+        .expand('custom.fields.payment')
+        .expand('custom.fields.employeeData')
+        .expand('custom.fields.auth')
+        .page(page)
+        .perPage(perPage)
+        .build()
+    );
+
+    const fetchRequest = {
+      uri,
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as PagedQueryResult))
+    );
   }
 
   // --- Channels --- //
