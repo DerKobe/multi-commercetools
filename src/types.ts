@@ -422,3 +422,42 @@ export interface LastModifiedBy {
   customer?: Reference;
   anonymousId?: string;
 }
+
+export interface CustomTypeDraft {
+  key: string;
+  name: LocalizedString;
+  description?: LocalizedString;
+  resourceTypeIds: string[];
+  fieldDefinitions?: FieldDefinition[];
+}
+
+export interface CustomType {
+  id: string;
+  key: string;
+  version: number;
+  createdAt: DateTime;
+  createdBy: CreatedBy;
+  lastModifiedAt: DateTime;
+  lastModifiedBy: LastModifiedBy;
+  name: LocalizedString;
+  description?: LocalizedString;
+  resourceTypeIds: string[];
+  fieldDefinitions: FieldDefinition[];
+}
+
+export interface FieldDefinition {
+  type: FieldType;
+  name: string;
+  label: LocalizedString;
+  required: boolean;
+  inputHint: TextInputHint;
+}
+
+export interface FieldType {
+  name: string;
+  values?: any[];
+  elementType?: FieldType;
+  referenceTypeId?: 'cart' | 'category' | 'channel' | 'customer' | 'key-value-document' | 'order' | 'product' | 'product-type' | 'review' | 'state' | 'shipping-method' | 'zone';
+}
+
+export type TextInputHint = 'SingleLine' | 'MultiLine'

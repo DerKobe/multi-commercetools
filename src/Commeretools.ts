@@ -5,8 +5,9 @@ import { createHttpMiddleware } from '@commercetools/sdk-middleware-http';
 import { createQueueMiddleware } from '@commercetools/sdk-middleware-queue';
 import fetch from 'node-fetch';
 import {
-  AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft, Entity,
-  InventoryEntry, InventoryEntryDraft, PagedQueryResult, Product, ProductDraft, ProductType
+  AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft, CustomType,
+  CustomTypeDraft, Entity, InventoryEntry, InventoryEntryDraft, PagedQueryResult,
+  Product,ProductDraft, ProductType
 } from './types';
 
 interface ICommercetoolsConfig {
@@ -404,7 +405,7 @@ export class Commercetools {
     );
   }
 
- public async fetchCategoryById(id: string): Promise<Category> {
+  public async fetchCategoryById(id: string): Promise<Category> {
     await this.initClient();
 
     const fetchRequest = {
@@ -417,6 +418,60 @@ export class Commercetools {
       this.client
         .execute(fetchRequest)
         .then(response => (response.body as Category))
+    );
+  }
+
+  // --- CustomTypes ---
+
+  public async fetchCustomTypes(page: number, perPage: number): Promise<PagedQueryResult> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().customTypes.page(page).perPage(perPage).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as PagedQueryResult))
+    );
+  }
+
+  public async createCustomType(customTypeDraft: CustomTypeDraft): Promise<CustomType> {
+    await this.initClient();
+
+    const postRequest = {
+      uri: this.request().customTypes.build(),
+      method: 'POST',
+      headers: this.headers,
+      body: customTypeDraft,
+    };
+
+    return (
+      this.client
+        .execute(postRequest)
+        .then(response => response.body)
+    );
+  }
+
+  public async deleteCustomType(id: string, version: number): Promise<void> {
+    await this.initClient();
+
+    const deleteRequest = {
+      uri: this.request().customTypes.byId(id).withVersion(version).build(),
+      method: 'DELETE',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(deleteRequest)
+        .catch(error => {
+          console.dir(error, { depth: null });
+          throw error;
+        })
     );
   }
 }
