@@ -145,11 +145,27 @@ export class Commercetools {
     );
   }
 
-  public async fetchCustomObject(container: string, key: string): Promise<CustomObject> {
+  public async fetchCustomObjectByKey(container: string, key: string): Promise<CustomObject> {
     await this.initClient();
 
     const fetchRequest = {
       uri: this.request().customObjects.where(`container="${container}" and key="${key}"`).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as PagedQueryResult).results[0])
+    );
+  }
+
+  public async fetchCustomObjectById(container: string, id: string): Promise<CustomObject> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().customObjects.where(`container="${container}" and id="${id}"`).build(),
       method: 'GET',
       headers: this.headers,
     };
