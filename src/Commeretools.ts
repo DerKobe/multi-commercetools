@@ -178,6 +178,18 @@ export class Commercetools {
     );
   }
 
+  public async deleteCustomObjectById(id: string): Promise<any> {
+    await this.initClient();
+
+    const deleteRequest = {
+      uri: this.request().customObjects.byId(id).build(),
+      method: 'DELETE',
+      headers: this.headers,
+    };
+
+    return this.client.execute(deleteRequest);
+  }
+
   // --- InventoryEntries --- //
 
   public async fetchInventoryEntry(sku: string, supplyChannelKey: string): Promise<InventoryEntry> {
