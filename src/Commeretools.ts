@@ -367,4 +367,22 @@ export class Commercetools {
 
     return this.client.execute(updateRequest);
   }
+
+  // --- Carts ---
+
+  public async fetchCarts(page: number, perPage: number): Promise<Product> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().carts.page(page).perPage(perPage).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as PagedQueryResult))
+    );
+  }
 }
