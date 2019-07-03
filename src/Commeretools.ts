@@ -311,6 +311,22 @@ export class Commercetools {
     );
   }
 
+  public async fetchProductById(id: string): Promise<Product> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().products.byId(id).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => response.body)
+    );
+  }
+
   public async fetchProductByEan(ean: string): Promise<Product> {
     await this.initClient();
 
