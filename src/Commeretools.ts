@@ -141,7 +141,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult).results[0])
+        .then(response => (response.body as PagedQueryResult).results)
     );
   }
 
