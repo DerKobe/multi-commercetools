@@ -370,7 +370,7 @@ export class Commercetools {
 
   // --- Carts ---
 
-  public async fetchCarts(page: number, perPage: number): Promise<Product> {
+  public async fetchCarts(page: number, perPage: number): Promise<PagedQueryResult> {
     await this.initClient();
 
     const fetchRequest = {
@@ -388,7 +388,7 @@ export class Commercetools {
 
   // --- Categories ---
 
-  public async fetchCategories(page: number, perPage: number): Promise<Category> {
+  public async fetchCategories(page: number, perPage: number): Promise<PagedQueryResult> {
     await this.initClient();
 
     const fetchRequest = {
@@ -401,6 +401,22 @@ export class Commercetools {
       this.client
         .execute(fetchRequest)
         .then(response => (response.body as PagedQueryResult))
+    );
+  }
+
+ public async fetchCategoryById(id: string): Promise<Category> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().categories.byId(id).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as Category))
     );
   }
 }
