@@ -129,6 +129,22 @@ export class Commercetools {
 
   // --- CustomObjects --- //
 
+  public async fetchCustomObjects(condition: string, page: number, perPage: number): Promise<CustomObject> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().customObjects.where(condition).page(page).perPage(perPage).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as PagedQueryResult).results[0])
+    );
+  }
+
   public async fetchCustomObject(container: string, key: string): Promise<CustomObject> {
     await this.initClient();
 
