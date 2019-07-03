@@ -290,17 +290,16 @@ export class Commercetools {
 
   // --- Products --- //
 
-  public async fetchProducts(sort?: string): Promise<PagedQueryResult> {
+  public async fetchProducts(page: number, perPage: number, sort?: string): Promise<PagedQueryResult> {
     await this.initClient();
 
-    let uri = this.request().products
+    let uri = this.request().products.page(page).perPage(perPage);
     if (sort) {
-      uri = uri.sort(sort)
+      uri = uri.sort(sort);
     }
-    uri = uri.build();
 
     const fetchRequest = {
-      uri,
+      uri: uri.build(),
       method: 'GET',
       headers: this.headers,
     };
