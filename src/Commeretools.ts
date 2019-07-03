@@ -6,11 +6,11 @@ import { createQueueMiddleware } from '@commercetools/sdk-middleware-queue';
 import fetch from 'node-fetch';
 import {
   AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft, CustomType,
-  CustomTypeDraft, Entity, InventoryEntry, InventoryEntryDraft, PagedQueryResult,
-  Product,ProductDraft, ProductType
+  CustomTypeDraft, Entity, Extension, ExtensionDraft, InventoryEntry,
+  InventoryEntryDraft,PagedQueryResult, Product, ProductDraft, ProductType
 } from './types';
 
-interface ICommercetoolsConfig {
+interface CommercetoolsConfig {
   projectKey: string,
   clientId: string,
   clientSecret: string,
@@ -23,12 +23,12 @@ interface ICommercetoolsConfig {
 export class Commercetools {
   public locale: string | undefined;
 
-  private readonly getConfig: () => Promise<ICommercetoolsConfig>;
+  private readonly getConfig: () => Promise<CommercetoolsConfig>;
   private client;
   private request;
   private headers;
 
-  constructor(getConfig: () => Promise<ICommercetoolsConfig>) {
+  constructor(getConfig: () => Promise<CommercetoolsConfig>) {
     this.getConfig = getConfig;
   }
 
@@ -461,6 +461,76 @@ export class Commercetools {
 
     const deleteRequest = {
       uri: this.request().customTypes.byId(id).withVersion(version).build(),
+      method: 'DELETE',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(deleteRequest)
+        .catch(error => {
+          console.dir(error, { depth: null });
+          throw error;
+        })
+    );
+  }
+
+  // --- Extensions ---
+
+  public async fetchExtensions(page: number, perPage: number): Promise<PagedQueryResult> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().extensions.page(page).perPage(perPage).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as PagedQueryResult))
+    );
+  }
+
+  public async fetchExtensionById(id: string): Promise<Extension> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().extensions.byId(id).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as Extension))
+    );
+  }
+
+  public async createExtension(extensionDraft: ExtensionDraft): Promise<Extension> {
+    await this.initClient();
+
+    const postRequest = {
+      uri: this.request().extensions.build(),
+      method: 'POST',
+      headers: this.headers,
+      body: extensionDraft,
+    };
+
+    return (
+      this.client
+        .execute(postRequest)
+        .then(response => (response.body as Extension))
+    );
+  }
+
+  public async deleteExtension(id: string, version: number): Promise<void> {
+    await this.initClient();
+
+    const deleteRequest = {
+      uri: this.request().extensions.byId(id).withVersion(version).build(),
       method: 'DELETE',
       headers: this.headers,
     };

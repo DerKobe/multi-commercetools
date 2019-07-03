@@ -461,3 +461,55 @@ export interface FieldType {
 }
 
 export type TextInputHint = 'SingleLine' | 'MultiLine'
+
+export interface Extension {
+  id: string;
+  key?: string;
+  version: number;
+  createdAt: DateTime;
+  createdBy: CreatedBy;
+  lastModifiedAt: DateTime;
+  lastModifiedBy: LastModifiedBy;
+  destination: Destination;
+  triggers: Trigger[];
+  timeoutInMs?: number;
+}
+
+export interface ExtensionDraft {
+  key?: string;
+  destination: Destination;
+  triggers: Trigger[];
+  timeoutInMs?: number;
+}
+
+export type Destination = HttpDestination | AwsLambdaDestination;
+
+export interface HttpDestination {
+  type:"HTTP";
+  url: string;
+  authentication?: HttpDestinationAuthentication;
+}
+
+export interface AwsLambdaDestination {
+  type: "AWSLambda";
+  arn: string;
+  accessKey: string;
+  accessSecret: string;
+}
+
+export type HttpDestinationAuthentication = AuthorizationHeader | AzureFunctionsAuthentication;
+
+export interface AuthorizationHeader {
+  type: 'AuthorizationHeader';
+  headerValue: string;
+}
+
+export interface AzureFunctionsAuthentication {
+  type: 'AzureFunctions';
+  key: string;
+}
+
+export interface Trigger {
+  resourceTypeId: 'cart' | 'order' | 'payment' | 'customer';
+  actions: Array<'Create' | 'Update'>;
+}
