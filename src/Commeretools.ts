@@ -392,9 +392,25 @@ export class Commercetools {
     );
   }
 
-  // --- Specials --- //
+  // --- ProductProjections(Search) ---
 
-  public async getPossibleValuesForAttribute(attributeName: string): Promise<Product> {
+  public async fetchProductProjectionMarkedBySku(sku: string): Promise<any> { // TODO define ProductProjection interface
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().productProjectionsSearch.filterByQuery(`variants.sku:"${sku}"`).markMatchingVariants().page(1).perPage(1).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as PagedQueryResult).results[0])
+    );
+  }
+
+  public async getPossibleValuesForAttribute(attributeName: string): Promise<string[]> {
     await this.initClient();
 
     const facetSelector = `variants.attributes.${attributeName}`;
