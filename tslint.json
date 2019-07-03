@@ -4,6 +4,7 @@
     "no-console": false,
     "indent": [true, "spaces", 2],
     "object-literal-sort-keys": false,
-    "ban-types": false
+    "ban-types": false,
+    "interface-name": false
   }
 }

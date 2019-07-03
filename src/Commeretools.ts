@@ -5,8 +5,8 @@ import { createHttpMiddleware } from '@commercetools/sdk-middleware-http';
 import { createQueueMiddleware } from '@commercetools/sdk-middleware-queue';
 import fetch from 'node-fetch';
 import {
-  AddAttributeAction, Channel, CustomObject, CustomObjectDraft, Entity, InventoryEntry,
-  InventoryEntryDraft, PagedQueryResult, Product, ProductDraft, ProductType
+  AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft, Entity,
+  InventoryEntry, InventoryEntryDraft, PagedQueryResult, Product, ProductDraft, ProductType
 } from './types';
 
 interface ICommercetoolsConfig {
@@ -375,6 +375,24 @@ export class Commercetools {
 
     const fetchRequest = {
       uri: this.request().carts.page(page).perPage(perPage).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as PagedQueryResult))
+    );
+  }
+
+  // --- Categories ---
+
+  public async fetchCategories(page: number, perPage: number): Promise<Category> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().categories.page(page).perPage(perPage).build(),
       method: 'GET',
       headers: this.headers,
     };

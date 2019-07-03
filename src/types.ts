@@ -21,13 +21,13 @@ export interface ProductDraft {
   productType: ResourceIdentifier;
   slug: LocalizedString;
   description?: LocalizedString;
-  categories?: Array<ResourceIdentifier>;
+  categories?: ResourceIdentifier[];
   categoryOrderHints?: CategoryOrderHints;
   metaTitle?: LocalizedString;
   metaDescription?: LocalizedString;
   metaKeywords?: LocalizedString;
   masterVariant?: ProductVariantDraft;
-  variants?: Array<ProductVariantDraft>;
+  variants?: ProductVariantDraft[];
   taxCategory?: ResourceIdentifier;
   searchKeywords?: SearchKeywords;
   state?: Reference;
@@ -37,28 +37,28 @@ export interface ProductDraft {
 interface ProductVariantDraft {
   sku?: string;
   key?: string;
-  prices?: Array<PriceDraft>;
-  images?: Array<Image>;
-  assets?: Array<AssetDraft>;
-  attributes?: Array<Attribute>;
+  prices?: PriceDraft[];
+  images?: Image[];
+  assets?: AssetDraft[];
+  attributes?: Attribute[];
 }
 
 interface Asset {
   id: string;
   key?: string;
-  sources: Array<AssetSource>;
+  sources: AssetSource[];
   name: LocalizedString;
   description?: LocalizedString;
-  tags?: Array<string>;
+  tags?: string[];
   custom?: CustomFields;
 }
 
 interface AssetDraft {
   key?: string;
-  sources: Array<AssetSource>;
+  sources: AssetSource[];
   name: LocalizedString;
   description?: LocalizedString;
-  tags?: Array<string>;
+  tags?: string[];
   custom?: CustomFieldsDraft;
 }
 
@@ -81,7 +81,7 @@ interface PriceDraft {
   channel?: ResourceIdentifier;
   validFrom?: DateTime;
   validUntil?: DateTime;
-  tiers?: Array<PriceTier>;
+  tiers?: PriceTier[];
   custom?: CustomFieldsDraft;
 }
 
@@ -103,7 +103,7 @@ interface WhitespaceTokenizer {
 
 interface CustomTokenizer {
   type: 'custom';
-  inputs: Array<string>;
+  inputs: string[];
 }
 
 type CategoryOrderHints = any;
@@ -134,22 +134,22 @@ interface ProductCatalogData {
 
 interface ProductData {
   name: LocalizedString;
-  categories: Array<Reference>;
+  categories: Reference[];
   description?: LocalizedString;
   slug: LocalizedString;
   masterVariant: ProductVariant;
-  variants: Array<ProductVariant>;
+  variants: ProductVariant[];
 }
 
 interface ProductVariant {
   id: number;
   sku?: string;
   key?: string;
-  prices?: Array<Price>;
-  attributes?: Array<Attribute>;
+  prices?: Price[];
+  attributes?: Attribute[];
   price?: Price;
-  images?: Array<Image>;
-  assets?: Array<Asset>;
+  images?: Image[];
+  assets?: Asset[];
   availability?: ProductVariantAvailability;
   isMatchingVariant?: Boolean;
   scopedPrice?: ScopedPrice;
@@ -261,7 +261,7 @@ export interface PagedQueryResult {
   limit: number;
   count: number;
   total?: number;
-  results: Array<any>;
+  results: any[];
   // facets?: FacetResults;
   meta?: any;
 }
@@ -274,7 +274,7 @@ export interface TaxCategory {
   lastModifiedAt: DateTime;
   name: string;
   description?: string;
-  rates: Array<TaxRate>;
+  rates: TaxRate[];
 }
 
 interface TaxRate {
@@ -332,7 +332,7 @@ export interface Channel {
   createdAt: DateTime;
   lastModifiedAt: DateTime;
   key: string; // unique within the project | Any arbitrary string key that uniquely identifies this channel within the project.
-  roles: Array<ChannelRole>; // The roles of this channel. Each channel must have at least one role.
+  roles: ChannelRole[]; // The roles of this channel. Each channel must have at least one role.
   name?: LocalizedString; // A human-readable name of the channel.
   description?: LocalizedString; // A human-readable description of the channel.
   address?: Address; // The address where this channel is located (e.g. if the channel is a physical store).
@@ -342,7 +342,7 @@ export interface Channel {
 
 export interface ChannelDraft {
   key: string;
-  roles?: Array<ChannelRole>; // If not specified, then channel will get InventorySupply role by default
+  roles?: ChannelRole[]; // If not specified, then channel will get InventorySupply role by default
   name?: LocalizedString;
   description?: LocalizedString;
   address?: Address;
@@ -385,4 +385,40 @@ interface ReviewRatingStatistics {
   lowestRating: number; // Lowest rating of one target
   count: number; // Number of ratings taken into account
   ratingsDistribution: any; // JSON object. The full distribution of the ratings. The keys are the different ratings and the values are the count of reviews having this rating. Only the used ratings appear in this object.
+}
+
+export interface Category {
+  id: string;
+  key?: string;
+  version: number;
+  createdAt: DateTime;
+  createdBy: CreatedBy;
+  lastModifiedAt: DateTime;
+  lastModifiedBy: LastModifiedBy;
+  name: LocalizedString;
+  slug: LocalizedString;
+  description?: LocalizedString;
+  ancestors: Reference[];
+  parent?: Reference;
+  orderHint: string;
+  externalId?: string;
+  metaTitle?: LocalizedString;
+  metaDescription?: LocalizedString;
+  metaKeywords?: LocalizedString;
+  custom?: CustomFields;
+  assets?: Asset[];
+}
+
+export interface CreatedBy {
+  clientId?: string;
+  externalUserId?: string;
+  customer?: Reference;
+  anonymousId?: string;
+}
+
+export interface LastModifiedBy {
+  clientId?: string;
+  externalUserId?: string;
+  customer?: Reference;
+  anonymousId?: string;
 }
