@@ -319,6 +319,26 @@ export class Commercetools {
     );
   }
 
+  // --- Specials --- //
+
+  public async getPossibleValuesForAttribute(attributeName: string): Promise<Product> {
+    await this.initClient();
+
+    const facetSelector = `variants.attributes.${attributeName}`;
+
+    const fetchRequest = {
+      uri: this.request().productProjectionsSearch.facet(facetSelector).page(1).perPage(1).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => response.body.facets[facetSelector].terms.map(({ term }) => term))
+    );
+  }
+
   // --- ProductTypes --- //
 
   public async fetchProductTypeByKey(key: String): Promise<ProductType> {
