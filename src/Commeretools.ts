@@ -7,7 +7,8 @@ import fetch from 'node-fetch';
 import {
   AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft, CustomType,
   CustomTypeDraft, Entity, Extension, ExtensionDraft, InventoryEntry,
-  InventoryEntryDraft,PagedQueryResult, Product, ProductDraft, ProductType
+  InventoryEntryDraft,PagedQueryResult, Product, ProductDraft, ProductType,
+  Subscription, SubscriptionDraft
 } from './types';
 
 interface CommercetoolsConfig {
@@ -626,6 +627,76 @@ export class Commercetools {
 
     const deleteRequest = {
       uri: this.request().extensions.byId(id).withVersion(version).build(),
+      method: 'DELETE',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(deleteRequest)
+        .catch(error => {
+          console.dir(error, { depth: null });
+          throw error;
+        })
+    );
+  }
+
+  // --- Subscriptions ---
+
+  public async fetchSubscriptions(page: number, perPage: number): Promise<PagedQueryResult> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().subscriptions.page(page).perPage(perPage).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as PagedQueryResult))
+    );
+  }
+
+  public async fetchSubscriptionById(id: string): Promise<Subscription> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().subscriptions.byId(id).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as Subscription))
+    );
+  }
+
+  public async createSubscription(subscriptionDraft: SubscriptionDraft): Promise<Subscription> {
+    await this.initClient();
+
+    const postRequest = {
+      uri: this.request().subscriptions.build(),
+      method: 'POST',
+      headers: this.headers,
+      body: subscriptionDraft,
+    };
+
+    return (
+      this.client
+        .execute(postRequest)
+        .then(response => (response.body as Subscription))
+    );
+  }
+
+  public async deleteSubscription(id: string, version: number): Promise<void> {
+    await this.initClient();
+
+    const deleteRequest = {
+      uri: this.request().subscriptions.byId(id).withVersion(version).build(),
       method: 'DELETE',
       headers: this.headers,
     };

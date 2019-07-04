@@ -513,3 +513,48 @@ export interface Trigger {
   resourceTypeId: 'cart' | 'order' | 'payment' | 'customer';
   actions: Array<'Create' | 'Update'>;
 }
+
+export interface SubscriptionDraft {
+  key?: string;
+  destination: Destination;
+  messages?: MessageSubscription[];
+  changes?: ChangeSubscription[];
+  format?: Format;
+}
+
+export interface Subscription {
+  id: string;
+  key?: string;
+  version: number;
+  createdAt: DateTime;
+  createdBy: CreatedBy;
+  lastModifiedAt: DateTime;
+  lastModifiedBy: LastModifiedBy;
+  destination: Destination;
+  messages: MessageSubscription[];
+  changes: ChangeSubscription[];
+  format: Format;
+  status: SubscriptionHealthStatus;
+}
+
+export interface MessageSubscription {
+  resourceTypeId: string;
+  types?: string[];
+}
+
+export interface ChangeSubscription {
+  resourceTypeId: 'cart' | 'cart-discount' | 'category' | 'channel' | 'customer' | 'customer-group' | 'discount-code' | 'extension' | 'inventory-entry' | 'order' | 'payment' | 'product' | 'product-discount' | 'product-type' | 'review' | 'shopping-list' | 'subscription' | 'state' | 'tax-category' | 'type';
+}
+
+export type Format = PlatformFormat | CloudEventsFormat;
+
+export interface PlatformFormat {
+  type: 'Platform';
+}
+
+export interface CloudEventsFormat {
+  type: 'CloudEvents';
+  cloudEventsVersion: '0.1';
+}
+
+export type SubscriptionHealthStatus = 'Healthy' | 'ConfigurationError' | 'ConfigurationErrorDeliveryStopped' | 'TemporaryError'
