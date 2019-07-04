@@ -410,6 +410,34 @@ export class Commercetools {
     );
   }
 
+  public async searchProductProjections(searchTerm: string, locale: string, filterByProductTypeKey?: string): Promise<any> { // TODO define ProductProjection interface
+    await this.initClient();
+
+    let uri = this.request().productProjectionsSearch.markMatchingVariants().text(searchTerm, locale);
+
+    if (filterByProductTypeKey) {
+      const fetchProductTypeRequest = {
+        uri: this.request().productTypes.byKey(filterByProductTypeKey).build(),
+        method: 'GET',
+        headers: this.headers,
+      };
+      const productTypeId = await this.client.execute(fetchProductTypeRequest).then(response => response.body.id);
+      uri = uri.filterByQuery(`productType.id:"${productTypeId}"`)
+    }
+
+    const fetchRequest = {
+      uri: uri.build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as PagedQueryResult))
+    );
+  }
+
   public async getPossibleValuesForAttribute(attributeName: string): Promise<string[]> {
     await this.initClient();
 
