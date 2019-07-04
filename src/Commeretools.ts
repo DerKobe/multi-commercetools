@@ -21,21 +21,6 @@ interface CommercetoolsConfig {
 }
 
 export class Commercetools {
-  protected static expandOrder(uri) {
-    return (
-      uri
-        .expand('lineItems[*].productType')
-        .expand('lineItems[*].supplyChannel')
-        .expand('lineItems[*].distributionChannel')
-        .expand('lineItems[*].variant.attributes[*].value')
-        .expand('lineItems[*].custom.fields.commodity_AnnualConsumptions')
-        .expand('custom.fields.permissions')
-        .expand('custom.fields.payment')
-        .expand('custom.fields.employeeData')
-        .expand('custom.fields.auth')
-    );
-  }
-
   public locale: string | undefined;
 
   private readonly getConfig: () => Promise<CommercetoolsConfig>;
@@ -97,11 +82,13 @@ export class Commercetools {
 
   // --- Orders --- //
 
-  public async fetchExpandedOrder(id: string): Promise<any> { // TODO define Order interface
+  public async fetchExpandedOrder(id: string, expansions?: string[]): Promise<any> { // TODO define Order interface
     await this.initClient();
 
     let uri = this.request().orders.byId(id);
-    uri = Commercetools.expandOrder(uri);
+    if (expansions) {
+      expansions.forEach(expansion => uri = uri.expand(expansion))
+    }
 
     const fetchRequest = {
       uri: uri.build(),
@@ -112,11 +99,13 @@ export class Commercetools {
     return this.client.execute(fetchRequest).then(({ body: order }) => order);
   }
 
-  public async fetchExpandedOrders(page: number, perPage: number): Promise<PagedQueryResult> {
+  public async fetchExpandedOrders(page: number, perPage: number, expansions?: string[]): Promise<PagedQueryResult> {
     await this.initClient();
 
     let uri = this.request().orders.page(page).perPage(perPage);
-    uri = Commercetools.expandOrder(uri);
+    if (expansions) {
+      expansions.forEach(expansion => uri = uri.expand(expansion))
+    }
 
     const fetchRequest = {
       uri: uri.build(),
