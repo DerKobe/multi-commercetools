@@ -523,7 +523,7 @@ export class Commercetools {
     await this.initClient();
 
     const fetchRequest = {
-      uri: this.request().customTypes.page(page).perPage(perPage).build(),
+      uri: this.request().types.page(page).perPage(perPage).build(),
       method: 'GET',
       headers: this.headers,
     };
@@ -539,7 +539,7 @@ export class Commercetools {
     await this.initClient();
 
     const postRequest = {
-      uri: this.request().customTypes.build(),
+      uri: this.request().types.build(),
       method: 'POST',
       headers: this.headers,
       body: customTypeDraft,
@@ -556,7 +556,7 @@ export class Commercetools {
     await this.initClient();
 
     const deleteRequest = {
-      uri: this.request().customTypes.byId(id).withVersion(version).build(),
+      uri: this.request().types.byId(id).withVersion(version).build(),
       method: 'DELETE',
       headers: this.headers,
     };
