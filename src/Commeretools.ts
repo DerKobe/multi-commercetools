@@ -145,11 +145,17 @@ export class Commercetools {
 
   // --- CustomObjects --- //
 
-  public async fetchCustomObjects(condition: string, page: number, perPage: number): Promise<CustomObject> {
+  public async fetchCustomObjects(condition: string|null, page: number, perPage: number): Promise<CustomObject> {
     await this.initClient();
 
+    let uri = this.request().customObjects.page(page).perPage(perPage);
+
+    if (condition) {
+      uri = uri.where(condition)
+    }
+
     const fetchRequest = {
-      uri: this.request().customObjects.where(condition).page(page).perPage(perPage).build(),
+      uri: uri.build(),
       method: 'GET',
       headers: this.headers,
     };
