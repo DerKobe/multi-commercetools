@@ -155,7 +155,7 @@ export class Commercetools {
     }
 
     if (sort) {
-      uri = uri.sort(sort);
+      uri = uri.parse({ sort })
     }
 
     const fetchRequest = {
