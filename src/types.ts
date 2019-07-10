@@ -558,3 +558,13 @@ export interface CloudEventsFormat {
 }
 
 export type SubscriptionHealthStatus = 'Healthy' | 'ConfigurationError' | 'ConfigurationErrorDeliveryStopped' | 'TemporaryError'
+
+// Order update actions
+
+export type UpdateOrderAction = ChangeOrderStateAction;
+
+export type OrderState = 'Open' | 'Confirmed' | 'Completed' | 'Cancelled';
+export interface ChangeOrderStateAction {
+  action: "changeOrderState"
+  orderState: OrderState;
+}

@@ -8,7 +8,7 @@ import {
   AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft, CustomType,
   CustomTypeDraft, Entity, Extension, ExtensionDraft, InventoryEntry,
   InventoryEntryDraft,PagedQueryResult, Product, ProductDraft, ProductType,
-  Subscription, SubscriptionDraft
+  Subscription, SubscriptionDraft, UpdateOrderAction
 } from './types';
 
 interface CommercetoolsConfig {
@@ -119,6 +119,19 @@ export class Commercetools {
         .execute(fetchRequest)
         .then(response => (response.body as PagedQueryResult))
     );
+  }
+
+  public async updateOrder(id: string, version: number, actions: UpdateOrderAction[]): Promise<any> { // TODO define Order interface
+    await this.initClient();
+
+    const updateRequest = {
+      uri: this.request().orders.byId(id).build(),
+      method: 'POST',
+      headers: this.headers,
+      body: { version, actions }
+    };
+
+    return this.client.execute(updateRequest).then(({ body: order }) => order);
   }
 
   // --- Channels --- //
