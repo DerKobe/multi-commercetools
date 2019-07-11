@@ -41,6 +41,6 @@
     "@commercetools/sdk-client": "^2.1.0",
     "@commercetools/sdk-middleware-auth": "^5.1.0",
     "@commercetools/sdk-middleware-http": "^5.2.0",
-    "@commercetools/sdk-middleware-queue": "^2.1.0",
+    "@commercetools/sdk-middleware-queue": "^2.1.0"
   }
 }
