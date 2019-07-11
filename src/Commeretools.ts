@@ -3,7 +3,6 @@ import { createClient } from '@commercetools/sdk-client';
 import { createAuthMiddlewareForClientCredentialsFlow } from '@commercetools/sdk-middleware-auth';
 import { createHttpMiddleware } from '@commercetools/sdk-middleware-http';
 import { createQueueMiddleware } from '@commercetools/sdk-middleware-queue';
-import fetch from 'node-fetch';
 import {
   AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft, CustomType,
   CustomTypeDraft, Entity, Extension, ExtensionDraft, InventoryEntry,
@@ -46,7 +45,6 @@ export class Commercetools {
     const authMiddleware = createAuthMiddlewareForClientCredentialsFlow({
       host: authHost,
       projectKey,
-      fetch,
       credentials: { clientId, clientSecret },
     });
 
