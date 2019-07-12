@@ -1,9 +1,9 @@
-import 'isomorphic-fetch';
 import { createRequestBuilder } from '@commercetools/api-request-builder';
 import { createClient } from '@commercetools/sdk-client';
 import { createAuthMiddlewareForClientCredentialsFlow } from '@commercetools/sdk-middleware-auth';
 import { createHttpMiddleware } from '@commercetools/sdk-middleware-http';
 import { createQueueMiddleware } from '@commercetools/sdk-middleware-queue';
+import 'isomorphic-fetch';
 import {
   AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft, CustomType,
   CustomTypeDraft, Entity, Extension, ExtensionDraft, InventoryEntry,
