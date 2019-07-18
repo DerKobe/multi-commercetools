@@ -5,10 +5,11 @@ import { createHttpMiddleware } from '@commercetools/sdk-middleware-http';
 import { createQueueMiddleware } from '@commercetools/sdk-middleware-queue';
 import 'isomorphic-fetch';
 import {
-  AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft, CustomType,
-  CustomTypeDraft, Entity, Extension, ExtensionDraft, InventoryEntry,
-  InventoryEntryDraft,PagedQueryResult, Product, ProductDraft, ProductType,
-  ProductTypeDraft, Sort, Subscription, SubscriptionDraft, UpdateOrderAction
+  AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft,
+  CustomType, CustomTypeDraft, Entity, Extension, ExtensionDraft,
+  InventoryEntry,InventoryEntryDraft, PagedQueryResult, Product, ProductDraft,
+  ProductType, ProductTypeDraft, Sort, Subscription, SubscriptionDraft,
+  TaxCategoryDraft, UpdateOrderAction
 } from './types';
 
 type CommercetoolsConfigGetter = () => Promise<CommercetoolsConfig>;
@@ -774,5 +775,36 @@ export class Commercetools {
           throw error;
         })
     );
+  }
+
+  // --- TaxCategory ---
+
+  public async createTaxCategory(taxCategoryDraft: TaxCategoryDraft): Promise<Extension> {
+    await this.initClient();
+
+    const createRequest = {
+      uri: this.request().taxCategories.build(),
+      method: 'POST',
+      headers: this.headers,
+      body: taxCategoryDraft,
+    };
+
+    return (
+      this.client
+        .execute(createRequest)
+        .then(response => (response.body as Extension))
+    );
+  }
+
+  public async deleteTaxCategory(key: string, version: number): Promise<void> {
+    await this.initClient();
+
+    const deleteRequest = {
+      uri: this.request().taxCategories.byKey(key).withVersion(version).build(),
+      method: 'DELETE',
+      headers: this.headers,
+    };
+
+    return this.client.execute(deleteRequest);
   }
 }

@@ -305,7 +305,28 @@ export interface TaxCategory {
   rates: TaxRate[];
 }
 
-interface TaxRate {
+export interface TaxCategoryDraft {
+  name: string;
+  key?: string;
+  description?: string;
+  rates: TaxRateDraft[];
+}
+
+export interface TaxRateDraft {
+  name: string;
+  amount?: number;
+  includedInPrice: boolean;
+  country: string;
+  state?: string;
+  subRates?: SubRate[];
+}
+
+export interface SubRate {
+  name: string;
+  amount: number; // Percentage in the range of [0..1]
+}
+
+export interface TaxRate {
   id?: string;
   name: string;
   amount: number; // Percentage in the range of [0..1]
