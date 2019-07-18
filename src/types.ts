@@ -568,3 +568,10 @@ export interface ChangeOrderStateAction {
   action: "changeOrderState"
   orderState: OrderState;
 }
+
+export type Sort = SortStatement[];
+
+export interface SortStatement {
+  by: string;
+  direction: 'asc' | 'desc';
+}

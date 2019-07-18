@@ -8,7 +8,7 @@ import {
   AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft, CustomType,
   CustomTypeDraft, Entity, Extension, ExtensionDraft, InventoryEntry,
   InventoryEntryDraft,PagedQueryResult, Product, ProductDraft, ProductType,
-  Subscription, SubscriptionDraft, UpdateOrderAction
+  Sort, Subscription, SubscriptionDraft, UpdateOrderAction
 } from './types';
 
 interface CommercetoolsConfig {
@@ -99,12 +99,17 @@ export class Commercetools {
     return this.client.execute(fetchRequest).then(({ body: order }) => order);
   }
 
-  public async fetchExpandedOrders(page: number, perPage: number, expansions?: string[]): Promise<PagedQueryResult> {
+  public async fetchExpandedOrders(page: number, perPage: number, expansions?: string[], sort?: Sort): Promise<PagedQueryResult> {
     await this.initClient();
 
     let uri = this.request().orders.page(page).perPage(perPage);
+
     if (expansions) {
       expansions.forEach(expansion => uri = uri.expand(expansion))
+    }
+
+    if (sort) {
+      uri = uri.parse({ sort })
     }
 
     const fetchRequest = {
@@ -157,7 +162,7 @@ export class Commercetools {
 
   // --- CustomObjects --- //
 
-  public async fetchCustomObjects(page: number, perPage: number, condition?: string, sort?: string): Promise<CustomObject> {
+  public async fetchCustomObjects(page: number, perPage: number, condition?: string, sort?: Sort): Promise<CustomObject> {
     await this.initClient();
 
     let uri = this.request().customObjects.page(page).perPage(perPage);
