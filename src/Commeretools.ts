@@ -8,7 +8,7 @@ import {
   AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft, CustomType,
   CustomTypeDraft, Entity, Extension, ExtensionDraft, InventoryEntry,
   InventoryEntryDraft,PagedQueryResult, Product, ProductDraft, ProductType,
-  Sort, Subscription, SubscriptionDraft, UpdateOrderAction
+  ProductTypeDraft, Sort, Subscription, SubscriptionDraft, UpdateOrderAction
 } from './types';
 
 type CommercetoolsConfigGetter = () => Promise<CommercetoolsConfig>;
@@ -486,6 +486,19 @@ export class Commercetools {
     };
 
     return this.client.execute(fetchRequest).then(response => response.body);
+  }
+
+  public async createProductType(productTypeDraft: ProductTypeDraft): Promise<void> {
+    await this.initClient();
+
+    const createRequest = {
+      uri: this.request().productTypes.build(),
+      method: 'POST',
+      headers: this.headers,
+      body: productTypeDraft,
+    };
+
+    return this.client.execute(createRequest);
   }
 
   public async updateProductType(keyOrProductType, actions: AddAttributeAction[]): Promise<void> {

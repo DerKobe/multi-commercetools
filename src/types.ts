@@ -237,6 +237,21 @@ interface LocalizedString {
 export interface ProductType {
   id: string;
   key?: string;
+  version: number;
+  createdAt: DateTime;
+  createdBy: CreatedBy;
+  lastModifiedAt: DateTime;
+  lastModifiedBy: LastModifiedBy;
+  name: string;
+  description: string;
+  attributes: AttributeDefinition[];
+}
+
+export interface ProductTypeDraft {
+  name: string;
+  key?: string;
+  description: string;
+  attributes: AttributeDefinitionDraft[];
 }
 
 export interface AddAttributeAction {
@@ -244,7 +259,7 @@ export interface AddAttributeAction {
   attribute: AttributeDefinitionDraft;
 }
 
-interface AttributeDefinitionDraft {
+export interface AttributeDefinitionDraft {
   type: AttributeType;
   name: string;
   label: LocalizedString;
@@ -252,7 +267,20 @@ interface AttributeDefinitionDraft {
   isSearchable?: boolean;
 }
 
-interface AttributeType {
+export interface AttributeDefinition {
+  type: AttributeType;
+  name: string;
+  label: LocalizedString;
+  isRequired: boolean;
+  attributeConstraint: AttributeConstraint;
+  inputTip?: LocalizedString;
+  inputHint: TextInputHint;
+  isSearchable: boolean;
+}
+
+export type AttributeConstraint = 'None' | 'Unique' | 'CombinationUnique' | 'SameForAll';
+
+export interface AttributeType {
   name: string;
 }
 
