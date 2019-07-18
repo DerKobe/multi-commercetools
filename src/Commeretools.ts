@@ -11,6 +11,8 @@ import {
   Sort, Subscription, SubscriptionDraft, UpdateOrderAction
 } from './types';
 
+type CommercetoolsConfigGetter = () => Promise<CommercetoolsConfig>;
+
 interface CommercetoolsConfig {
   projectKey: string,
   clientId: string,
@@ -24,20 +26,29 @@ interface CommercetoolsConfig {
 export class Commercetools {
   public locale: string | undefined;
 
-  private readonly getConfig: () => Promise<CommercetoolsConfig>;
+  private readonly getConfig?: () => Promise<CommercetoolsConfig>;
+
+  private config?: CommercetoolsConfig;
   private client;
   private request;
   private headers;
 
-  constructor(getConfig: () => Promise<CommercetoolsConfig>) {
-    this.getConfig = getConfig;
+  constructor(passedConfig: CommercetoolsConfig | CommercetoolsConfigGetter) {
+    if (typeof passedConfig === 'function') {
+      this.getConfig = passedConfig;
+    } else {
+      this.config = passedConfig
+    }
   }
 
   public async initClient(): Promise<any> {
     if (this.client) { return; }
 
-    const config = await this.getConfig();
-    const { projectKey, clientId, clientSecret, concurrency, locale, apiHost, authHost } = config;
+    if (this.getConfig) {
+      this.config = await this.getConfig();
+    }
+
+    const { projectKey, clientId, clientSecret, concurrency, locale, apiHost, authHost } = this.config as CommercetoolsConfig;
 
     this.locale = locale;
 
