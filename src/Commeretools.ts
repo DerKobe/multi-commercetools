@@ -7,8 +7,8 @@ import 'isomorphic-fetch';
 import {
   AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft,
   CustomType, CustomTypeDraft, Entity, Extension, ExtensionDraft,
-  InventoryEntry,InventoryEntryDraft, PagedQueryResult, Product, ProductDraft,
-  ProductType, ProductTypeDraft, Sort, Subscription, SubscriptionDraft,
+  InventoryEntry, InventoryEntryDraft, PagedQueryResult, Product, ProductDraft,
+  ProductType, ProductTypeDraft, Sort, Subscription, SubscriptionDraft, TaxCategory,
   TaxCategoryDraft, UpdateOrderAction
 } from './types';
 
@@ -779,7 +779,21 @@ export class Commercetools {
 
   // --- TaxCategory ---
 
-  public async createTaxCategory(taxCategoryDraft: TaxCategoryDraft): Promise<Extension> {
+  public async fetchTaxCategoryByKey(key: string): Promise<TaxCategory> {
+    const fetchRequest = {
+      uri: this.request().taxCategories.byKey(key).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as TaxCategory))
+    );
+  }
+
+  public async createTaxCategory(taxCategoryDraft: TaxCategoryDraft): Promise<TaxCategory> {
     await this.initClient();
 
     const createRequest = {
@@ -796,7 +810,9 @@ export class Commercetools {
     );
   }
 
-  public async deleteTaxCategory(key: string, version: number): Promise<void> {
+  public async deleteTaxCategory(key: string): Promise<void> {
+    const { version } = await this.resolveKeyAndVersion(key, this.fetchTaxCategoryByKey);
+
     await this.initClient();
 
     const deleteRequest = {
