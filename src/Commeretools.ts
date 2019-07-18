@@ -516,6 +516,20 @@ export class Commercetools {
     return this.client.execute(updateRequest);
   }
 
+  public async deleteProductType(keyOrProductType): Promise<void> {
+    await this.initClient();
+
+    const { key, version } = await this.resolveKeyAndVersion(keyOrProductType, this.fetchProductTypeByKey);
+
+    const createRequest = {
+      uri: this.request().productTypes.byKey(key).withVersion(version).build(),
+      method: 'DELETE',
+      headers: this.headers,
+    };
+
+    return this.client.execute(createRequest);
+  }
+
   // --- Carts ---
 
   public async fetchCarts(page: number, perPage: number): Promise<PagedQueryResult> {
