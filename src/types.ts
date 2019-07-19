@@ -285,7 +285,12 @@ export interface AttributeDefinition {
   isSearchable: boolean;
 }
 
-export type AttributeConstraint = 'None' | 'Unique' | 'CombinationUnique' | 'SameForAll';
+export enum AttributeConstraint {
+  None = 'None',
+  Unique = 'Unique',
+  CombinationUnique = 'CombinationUnique',
+  SameForAll = 'SameForAll'
+}
 
 export interface AttributeType {
   name: string;
@@ -405,7 +410,13 @@ export interface ChannelDraft {
   custom?: CustomFieldsDraft;
 }
 
-export type ChannelRole = 'InventorySupply' | 'ProductDistribution' | 'OrderExport' | 'OrderImport' | 'Primary';
+export enum ChannelRole {
+  InventorySupply = 'InventorySupply',
+  ProductDistribution = 'ProductDistribution',
+  OrderExport = 'OrderExport',
+  OrderImport = 'OrderImport',
+  Primary = 'Primary'
+}
 
 export interface Address {
   country: string; // A two-digit country code as per ↗ ISO 3166-1 alpha-2 .
@@ -516,7 +527,10 @@ export interface FieldType {
   referenceTypeId?: 'cart' | 'category' | 'channel' | 'customer' | 'key-value-document' | 'order' | 'product' | 'product-type' | 'review' | 'state' | 'shipping-method' | 'zone';
 }
 
-export type TextInputHint = 'SingleLine' | 'MultiLine'
+export enum TextInputHint {
+  SingleLine = 'SingleLine',
+  MultiLine = 'MultiLine'
+}
 
 export interface Extension {
   id: string;
@@ -613,13 +627,24 @@ export interface CloudEventsFormat {
   cloudEventsVersion: '0.1';
 }
 
-export type SubscriptionHealthStatus = 'Healthy' | 'ConfigurationError' | 'ConfigurationErrorDeliveryStopped' | 'TemporaryError'
+export enum SubscriptionHealthStatus {
+  Healthy = 'Healthy',
+  ConfigurationError = 'ConfigurationError',
+  ConfigurationErrorDeliveryStopped = 'ConfigurationErrorDeliveryStopped',
+  TemporaryError = 'TemporaryError'
+}
 
 // Order update actions
 
 export type UpdateOrderAction = ChangeOrderStateAction;
 
-export type OrderState = 'Open' | 'Confirmed' | 'Completed' | 'Cancelled';
+export enum OrderState {
+  Open = 'Open',
+  Confirmed = 'Confirmed',
+  Completed = 'Completed',
+  Cancelled = 'Cancelled'
+};
+
 export interface ChangeOrderStateAction {
   action: "changeOrderState"
   orderState: OrderState;
@@ -714,7 +739,12 @@ export interface CustomLineItem {
   shippingDetails?: ItemShippingDetails;
 }
 
-export type TaxMode = 'Platform' | 'External' | 'ExternalAmount' | 'Disabled'
+export enum TaxMode {
+  Platform = 'Platform',
+  External = 'External',
+  ExternalAmount = 'ExternalAmount',
+  Disabled = 'Disabled'
+}
 
 export interface TaxedPrice {
   totalNet: Money;
@@ -728,13 +758,33 @@ export interface TaxPortion {
   amount: Money;
 }
 
-export type RoundingMode = 'HalfEven' | 'HalfUp' | 'HalfDown';
+export enum RoundingMode {
+  HalfEven = 'HalfEven',
+  HalfUp = 'HalfUp',
+  HalfDown = 'HalfDown'
+}
 
-export type TaxCalculationMode = 'LineItemLevel' | 'UnitPriceLevel';
+export enum TaxCalculationMode {
+  LineItemLevel = 'LineItemLevel',
+  UnitPriceLevel = 'UnitPriceLevel'
+}
 
-export type ShipmentState = 'Shipped' | 'Ready' | 'Pending' | 'Delayed' | 'Partial' | 'Backorder';
+export enum ShipmentState {
+  Shipped = 'Shipped',
+  Ready = 'Ready',
+  Pending = 'Pending',
+  Delayed = 'Delayed',
+  Partial = 'Partial',
+  Backorder = 'Backorder'
+}
 
-export type PaymentState = 'BalanceDue' | 'Failed' | 'Pending' | 'CreditOwed' | 'Paid';
+export enum PaymentState {
+  BalanceDue = 'BalanceDue',
+  Failed = 'Failed',
+  Pending = 'Pending',
+  CreditOwed = 'CreditOwed',
+  Paid = 'Paid'
+}
 
 export interface ShippingInfo {
   shippingMethodName: string;
@@ -772,7 +822,11 @@ export interface PaymentInfo {
   payments: Reference[]; // to Payments
 }
 
-export type InventoryMode = 'TrackOnly' | 'ReserveOnOrder' | 'None';
+export enum InventoryMode {
+  TrackOnly = 'TrackOnly',
+  ReserveOnOrder = 'ReserveOnOrder',
+  None = 'None'
+}
 
 export type ShippingRateInput = ClassificationShippingRateInput | ScoreShippingRateInput;
 
@@ -787,7 +841,10 @@ export interface ScoreShippingRateInput {
   score: Number;
 }
 
-export type CartOrigin = 'Customer' | 'Merchant';
+export enum CartOrigin {
+  Customer = 'Customer',
+  Merchant = 'Merchant'
+}
 
 export interface TaxedItemPrice {
   totalNet: Money;
@@ -804,9 +861,15 @@ quantity: number;
 discountedPrice: DiscountedLineItemPrice;
 }
 
-export type LineItemPriceMode = 'Standard' | 'GiftLineItem';
+export enum LineItemPriceMode {
+  Standard = 'Standard',
+  GiftLineItem = 'GiftLineItem'
+}
 
-export type LineItemMode = 'Standard' | 'GiftLineItem';
+export enum LineItemMode {
+  Standard = 'Standard',
+  GiftLineItem = 'GiftLineItem'
+}
 
 export interface ItemShippingDetails {
   targets: ItemShippingTarget[];
@@ -838,7 +901,10 @@ export interface DiscountedLineItemPortion {
   discountedAmount: BaseMoney;
 }
 
-export type ShippingMethodState = 'DoesNotMatchCart' | 'MatchesCart';
+export enum ShippingMethodState {
+  DoesNotMatchCart = 'DoesNotMatchCart',
+  MatchesCart = 'MatchesCart'
+}
 
 export type ReturnItem = LineItemReturnItem | CustomLineItemReturnItem;
 
@@ -866,7 +932,14 @@ export interface CustomLineItemReturnItem {
   createdAt: DateTime;
 }
 
-export type DiscountCodeState = 'NotActive' | 'NotValid' | 'DoesNotMatchCart' | 'MatchesCart' | 'MaxApplicationReached' | 'ApplicationStoppedByPreviousDiscount';
+export enum DiscountCodeState {
+  NotActive = 'NotActive',
+  NotValid = 'NotValid',
+  DoesNotMatchCart = 'DoesNotMatchCart',
+  MatchesCart = 'MatchesCart',
+  MaxApplicationReached = 'MaxApplicationReached',
+  ApplicationStoppedByPreviousDiscount = 'ApplicationStoppedByPreviousDiscount'
+}
 
 export interface ItemShippingTarget {
   addressKey: string;
@@ -909,9 +982,19 @@ export interface Parcel {
   items?: DeliveryItem;
 }
 
-export type ReturnShipmentState = 'Advised' | 'Returned' | 'BackInStock' | 'Unusable';
+export enum ReturnShipmentState {
+  Advised = 'Advised',
+  Returned = 'Returned',
+  BackInStock = 'BackInStock',
+  Unusable = 'Unusable'
+}
 
-export type ReturnPaymentState = 'NonRefundable' | 'Initial' | 'Refunded' | 'NotRefunded';
+export enum ReturnPaymentState {
+  NonRefundable = 'NonRefundable',
+  Initial = 'Initial',
+  Refunded = 'Refunded',
+  NotRefunded = 'NotRefunded'
+}
 
 export interface ParcelMeasurements {
   heightInMillimeter: number;
