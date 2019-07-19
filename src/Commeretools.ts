@@ -5,11 +5,11 @@ import { createHttpMiddleware } from '@commercetools/sdk-middleware-http';
 import { createQueueMiddleware } from '@commercetools/sdk-middleware-queue';
 import 'isomorphic-fetch';
 import {
-  AddAttributeAction, Category, Channel, CustomObject, CustomObjectDraft,
-  CustomType, CustomTypeDraft, Entity, Extension, ExtensionDraft,
-  InventoryEntry, InventoryEntryDraft, PagedQueryResult, Product, ProductDraft,
-  ProductType, ProductTypeDraft, Sort, Subscription, SubscriptionDraft, TaxCategory,
-  TaxCategoryDraft, UpdateOrderAction
+  AddAttributeAction, Category, Channel, ChannelDraft, CustomObject,
+  CustomObjectDraft, CustomType, CustomTypeDraft, Entity, Extension,
+  ExtensionDraft, InventoryEntry, InventoryEntryDraft, Order, PagedQueryResult,
+  Product, ProductDraft, ProductType, ProductTypeDraft, Sort, Subscription,
+  SubscriptionDraft, TaxCategory, TaxCategoryDraft, UpdateOrderAction
 } from './types';
 
 type CommercetoolsConfigGetter = () => Promise<CommercetoolsConfig>;
@@ -111,7 +111,7 @@ export class Commercetools {
     return this.client.execute(fetchRequest).then(({ body: order }) => order);
   }
 
-  public async fetchExpandedOrders(page: number, perPage: number, expansions?: string[], sort?: Sort): Promise<PagedQueryResult> {
+  public async fetchExpandedOrders(page: number, perPage: number, expansions?: string[], sort?: Sort): Promise<PagedQueryResult<Order>> {
     await this.initClient();
 
     let uri = this.request().orders.page(page).perPage(perPage);
@@ -133,7 +133,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult))
+        .then(response => response.body)
     );
   }
 
@@ -165,16 +165,43 @@ export class Commercetools {
       this.client
         .execute(fetchRequest)
         .then(({ body: { results } }) => results[0])
-        .catch(error => {
-          console.dir(error, { depth: null });
-          throw error;
-        })
     );
+  }
+
+  public async createChannel(body: ChannelDraft): Promise<Channel> {
+    await this.initClient();
+
+    const createRequest = {
+      uri: this.request().channels.build(),
+      method: 'POST',
+      headers: this.headers,
+      body,
+    };
+
+    return (
+      this.client
+        .execute(createRequest)
+        .then(({ body: channel }) => channel as Channel)
+    )
+  }
+
+  public async deleteChannelByKey(key: string): Promise<void> {
+    await this.initClient();
+
+    const channel = await this.fetchChannelByKey(key);
+
+    const deleteRequest = {
+      uri: this.request().channels.byId(channel.id).withVersion(channel.version).build(),
+      method: 'DELETE',
+      headers: this.headers,
+    };
+
+    return this.client.execute(deleteRequest);
   }
 
   // --- CustomObjects --- //
 
-  public async fetchCustomObjects(page: number, perPage: number, condition?: string, sort?: Sort): Promise<CustomObject> {
+  public async fetchCustomObjects(page: number, perPage: number, condition?: string, sort?: Sort): Promise<PagedQueryResult<CustomObject>> {
     await this.initClient();
 
     let uri = this.request().customObjects.page(page).perPage(perPage);
@@ -196,7 +223,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult))
+        .then(response => response.body)
     );
   }
 
@@ -212,7 +239,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult).results[0])
+        .then(response => (response.body as PagedQueryResult<CustomObject>).results[0])
     );
   }
 
@@ -250,13 +277,7 @@ export class Commercetools {
   public async fetchInventoryEntry(sku: string, supplyChannelKey: string): Promise<InventoryEntry> {
     await this.initClient();
 
-    const channelRequest = {
-      uri: this.request().channels.where(`key="${supplyChannelKey}"`).build(),
-      method: 'GET',
-      headers: this.headers,
-    };
-
-    const channel = await this.client.execute(channelRequest).then(({ body: { results } }) => results[0]);
+    const channel = await this.fetchChannelByKey(supplyChannelKey);
 
     const inventoryRequest = {
       uri: this.request().inventory.where(`sku="${sku}" and supplyChannel(typeId="channel" and id="${channel.id}")`).build(),
@@ -307,9 +328,25 @@ export class Commercetools {
     );
   }
 
+  public async fetchInventoryEntriesByChannelId(channelId: string): Promise<PagedQueryResult<InventoryEntry>> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().inventory.where(`supplyChannel(typeId="channel" and id="${channelId}")`).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => response.body)
+    );
+  }
+
   // --- Products --- //
 
-  public async fetchProducts(page: number, perPage: number, sort?: string): Promise<PagedQueryResult> {
+  public async fetchProducts(page: number, perPage: number, sort?: string): Promise<PagedQueryResult<Product>> {
     await this.initClient();
 
     let uri = this.request().products.page(page).perPage(perPage);
@@ -326,7 +363,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => response.body as PagedQueryResult)
+        .then(response => response.body)
     );
   }
 
@@ -358,7 +395,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult).results[0])
+        .then(response => (response.body as PagedQueryResult<Product>).results[0])
     );
   }
 
@@ -374,7 +411,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult).results[0])
+        .then(response => (response.body as PagedQueryResult<Product>).results[0])
     );
   }
 
@@ -390,7 +427,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult).results[0])
+        .then(response => (response.body as PagedQueryResult<Product>).results[0])
     );
   }
 
@@ -425,11 +462,11 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult).results[0])
+        .then(response => (response.body as PagedQueryResult<any>).results[0])
     );
   }
 
-  public async searchProductProjections(searchTerm: string, locale: string, filterByProductTypeKey?: string): Promise<any> { // TODO define ProductProjection interface
+  public async searchProductProjections(searchTerm: string, locale: string, filterByProductTypeKey?: string): Promise<PagedQueryResult<any>> { // TODO define ProductProjection interface
     await this.initClient();
 
     let uri = this.request().productProjectionsSearch.markMatchingVariants().text(searchTerm, locale);
@@ -453,7 +490,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult))
+        .then(response => (response.body as PagedQueryResult<any>))
     );
   }
 
@@ -489,7 +526,7 @@ export class Commercetools {
     return this.client.execute(fetchRequest).then(response => response.body);
   }
 
-  public async createProductType(productTypeDraft: ProductTypeDraft): Promise<void> {
+  public async createProductType(productTypeDraft: ProductTypeDraft): Promise<ProductType> {
     await this.initClient();
 
     const createRequest = {
@@ -499,7 +536,11 @@ export class Commercetools {
       body: productTypeDraft,
     };
 
-    return this.client.execute(createRequest);
+    return (
+      this.client
+        .execute(createRequest)
+        .then(response => response.body)
+    );
   }
 
   public async updateProductType(keyOrProductType, actions: AddAttributeAction[]): Promise<void> {
@@ -533,7 +574,7 @@ export class Commercetools {
 
   // --- Carts ---
 
-  public async fetchCarts(page: number, perPage: number): Promise<PagedQueryResult> {
+  public async fetchCarts(page: number, perPage: number): Promise<PagedQueryResult<any>> { // TODO define Cart interface
     await this.initClient();
 
     const fetchRequest = {
@@ -545,13 +586,13 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult))
+        .then(response => response.body)
     );
   }
 
   // --- Categories ---
 
-  public async fetchCategories(page: number, perPage: number): Promise<PagedQueryResult> {
+  public async fetchCategories(page: number, perPage: number): Promise<PagedQueryResult<Category>> {
     await this.initClient();
 
     const fetchRequest = {
@@ -563,7 +604,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult))
+        .then(response => response.body)
     );
   }
 
@@ -585,7 +626,7 @@ export class Commercetools {
 
   // --- CustomTypes ---
 
-  public async fetchCustomTypes(page: number, perPage: number): Promise<PagedQueryResult> {
+  public async fetchCustomTypes(page: number, perPage: number): Promise<PagedQueryResult<CustomType>> {
     await this.initClient();
 
     const fetchRequest = {
@@ -597,7 +638,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult))
+        .then(response => response.body)
     );
   }
 
@@ -639,7 +680,7 @@ export class Commercetools {
 
   // --- Extensions ---
 
-  public async fetchExtensions(page: number, perPage: number): Promise<PagedQueryResult> {
+  public async fetchExtensions(page: number, perPage: number): Promise<PagedQueryResult<Extension>> {
     await this.initClient();
 
     const fetchRequest = {
@@ -651,7 +692,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult))
+        .then(response => response.body)
     );
   }
 
@@ -709,7 +750,7 @@ export class Commercetools {
 
   // --- Subscriptions ---
 
-  public async fetchSubscriptions(page: number, perPage: number): Promise<PagedQueryResult> {
+  public async fetchSubscriptions(page: number, perPage: number): Promise<PagedQueryResult<Subscription>> {
     await this.initClient();
 
     const fetchRequest = {
@@ -721,7 +762,7 @@ export class Commercetools {
     return (
       this.client
         .execute(fetchRequest)
-        .then(response => (response.body as PagedQueryResult))
+        .then(response => response.body)
     );
   }
 
@@ -780,6 +821,8 @@ export class Commercetools {
   // --- TaxCategory ---
 
   public async fetchTaxCategoryByKey(key: string): Promise<TaxCategory> {
+    await this.initClient();
+
     const fetchRequest = {
       uri: this.request().taxCategories.byKey(key).build(),
       method: 'GET',
@@ -811,6 +854,8 @@ export class Commercetools {
   }
 
   public async deleteTaxCategory(key: string): Promise<void> {
+    await this.initClient();
+
     const { version } = await this.resolveKeyAndVersion(key, this.fetchTaxCategoryByKey);
 
     await this.initClient();

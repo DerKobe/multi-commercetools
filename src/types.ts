@@ -34,7 +34,7 @@ export interface ProductDraft {
   publish?: boolean;
 }
 
-interface ProductVariantDraft {
+export interface ProductVariantDraft {
   sku?: string;
   key?: string;
   prices?: PriceDraft[];
@@ -43,7 +43,7 @@ interface ProductVariantDraft {
   attributes?: Attribute[];
 }
 
-interface Asset {
+export interface Asset {
   id: string;
   key?: string;
   sources: AssetSource[];
@@ -53,7 +53,7 @@ interface Asset {
   custom?: CustomFields;
 }
 
-interface AssetDraft {
+export interface AssetDraft {
   key?: string;
   sources: AssetSource[];
   name: LocalizedString;
@@ -62,19 +62,19 @@ interface AssetDraft {
   custom?: CustomFieldsDraft;
 }
 
-interface AssetSource {
+export interface AssetSource {
   uri: string;
   key?: string;
   dimensions?: AssetDimensions;
   contentType?: string;
 }
 
-interface CustomFieldsDraft {
+export interface CustomFieldsDraft {
   type: ResourceIdentifier;
   fields?: any;
 }
 
-interface PriceDraft {
+export interface PriceDraft {
   value: BaseMoney;
   country?: string;
   customerGroup?: Reference;
@@ -85,54 +85,61 @@ interface PriceDraft {
   custom?: CustomFieldsDraft;
 }
 
-interface PriceTier {
+export interface PriceTier {
   minimumQuantity: number;
   value: BaseMoney;
 }
 
-interface SearchKeywords {
+export interface SearchKeywords {
   text: string;
   suggestTokenizer?: SuggestTokenizer;
 }
 
-type SuggestTokenizer = WhitespaceTokenizer | CustomTokenizer;
+export type SuggestTokenizer = WhitespaceTokenizer | CustomTokenizer;
 
-interface WhitespaceTokenizer {
+export interface WhitespaceTokenizer {
   type: 'whitespace';
 }
 
-interface CustomTokenizer {
+export interface CustomTokenizer {
   type: 'custom';
   inputs: string[];
 }
 
-type CategoryOrderHints = any;
+export type CategoryOrderHints = any;
 
-type ResourceIdentifier = ResourceIdentifierById | ResourceIdentifierByKey;
+export type ResourceIdentifier = ResourceIdentifierById | ResourceIdentifierByKey;
 
-interface ResourceIdentifierById {
+export interface ResourceIdentifierById {
   id: string;
   typeId?: string;
 }
 
-interface ResourceIdentifierByKey {
+export interface ResourceIdentifierByKey {
   key: string;
   typeId?: string;
 }
 
-interface Reference {
+export interface KeyReference {
+  typeId: string;
+  key: string;
+}
+
+export interface IdReference {
   typeId: string;
   id: string;
 }
 
-interface ProductCatalogData {
+export type Reference = KeyReference | IdReference;
+
+export interface ProductCatalogData {
   published: Boolean;
   current: ProductData;
   staged: ProductData;
   hasStagedChanges: Boolean;
 }
 
-interface ProductData {
+export interface ProductData {
   name: LocalizedString;
   categories: Reference[];
   description?: LocalizedString;
@@ -141,7 +148,7 @@ interface ProductData {
   variants: ProductVariant[];
 }
 
-interface ProductVariant {
+export interface ProductVariant {
   id: number;
   sku?: string;
   key?: string;
@@ -156,9 +163,9 @@ interface ProductVariant {
   scopedPriceDiscounted?: Boolean;
 }
 
-type DateTime = string;
+export type DateTime = string;
 
-interface Price {
+export interface Price {
   id: string;
   value: BaseMoney;
   country?: string;
@@ -170,54 +177,54 @@ interface Price {
   custom?: CustomFields;
 }
 
-interface BaseMoney {
+export interface BaseMoney {
   type: string;
   currencyCode: string;
   centAmount: number;
   fractionDigits: number;
 }
 
-interface DiscountedPrice {
+export interface DiscountedPrice {
   value: Money;
   discount: Reference;
 }
 
-interface Money {
+export interface Money {
   type: string;
   currencyCode: string;
   centAmount: number;
   fractionDigits: number;
 }
 
-interface CustomFields {
+export interface CustomFields {
   type: Reference;
   fields: any;
 }
 
-interface Attribute {
+export interface Attribute {
   name: string;
   value: any;
 }
 
-interface Image {
+export interface Image {
   url: string;
   dimensions: AssetDimensions;
   label?: string;
 }
 
-interface AssetDimensions {
+export interface AssetDimensions {
   w: number;
   h: number;
 }
 
-interface ProductVariantAvailability {
+export interface ProductVariantAvailability {
   isOnStock?: Boolean;
   restockableInDays?: number;
   availableQuantity?: number;
   channels?: any; // Map of ProductVariantAvailability per Channel id
 }
 
-interface ScopedPrice {
+export interface ScopedPrice {
   id: string;
   value: BaseMoney;
   currentValue: BaseMoney;
@@ -230,7 +237,7 @@ interface ScopedPrice {
   custom?: CustomFields;
 }
 
-interface LocalizedString {
+export interface LocalizedString {
   [locale: string]: string;
 }
 
@@ -284,12 +291,12 @@ export interface AttributeType {
   name: string;
 }
 
-export interface PagedQueryResult {
+export interface PagedQueryResult<T> {
   offset: number;
   limit: number;
   count: number;
   total?: number;
-  results: any[];
+  results: T[];
   // facets?: FacetResults;
   meta?: any;
 }
@@ -398,9 +405,9 @@ export interface ChannelDraft {
   custom?: CustomFieldsDraft;
 }
 
-type ChannelRole = 'InventorySupply' | 'ProductDistribution' | 'OrderExport' | 'OrderImport' | 'Primary';
+export type ChannelRole = 'InventorySupply' | 'ProductDistribution' | 'OrderExport' | 'OrderImport' | 'Primary';
 
-interface Address {
+export interface Address {
   country: string; // A two-digit country code as per ↗ ISO 3166-1 alpha-2 .
   id?: string;
   key?: string; // if given it must match [a-zA-Z0-9_\-]{2,256}
@@ -428,7 +435,7 @@ interface Address {
   externalId?: string;
 }
 
-interface ReviewRatingStatistics {
+export interface ReviewRatingStatistics {
   averageRating: number; // Average rating of one target. This number is rounded with 5 decimals.
   highestRating: number; // Highest rating of one target
   lowestRating: number; // Lowest rating of one target
@@ -623,4 +630,300 @@ export type Sort = SortStatement[];
 export interface SortStatement {
   by: string;
   direction: 'asc' | 'desc';
+}
+
+export interface Order {
+  id: string;
+  version: number;
+  createdAt: DateTime;
+  createdBy?: CreatedBy;
+  lastModifiedAt: DateTime;
+  lastModifiedBy?: LastModifiedBy;
+  completedAt?: DateTime;
+  orderNumber?: string;
+  customerId?: string;
+  customerEmail?: string;
+  anonymousId?: string;
+  store?: KeyReference;
+  lineItems: LineItem[];
+  customLineItems: CustomLineItem[];
+  totalPrice: Money;
+  taxedPrice?: TaxedPrice;
+  shippingAddress?: Address;
+  billingAddress?: Address;
+  taxMode: TaxMode;
+  taxRoundingMode: RoundingMode;
+  taxCalculationMode: TaxCalculationMode;
+  customerGroup?: Reference;
+  country?: string;
+  orderState: OrderState;
+  state?: Reference;
+  shipmentState?: ShipmentState;
+  paymentState?: PaymentState;
+  shippingInfo?: ShippingInfo;
+  syncInfo: Set<SyncInfo>;
+  returnInfo: Set<ReturnInfo>;
+  discountCodes: DiscountCodeInfo[];
+  refusedGifts: Reference[];
+  lastMessageSequenceNumber: number;
+  cart?: Reference;
+  custom?: CustomFields;
+  paymentInfo?: PaymentInfo;
+  locale?: string;
+  inventoryMode: InventoryMode;
+  shippingRateInput?: ShippingRateInput;
+  origin: CartOrigin;
+  itemShippingAddresses: Address[];
+}
+
+export interface LineItem {
+  id: string
+  productId: string
+  name: LocalizedString
+  productSlug?: LocalizedString;
+  productType?: Reference;
+  variant: ProductVariant;
+  price: Price;
+  taxedPrice?: TaxedItemPrice;
+  totalPrice: Money
+  quantity: Number
+  state: ItemState[];
+  taxRate?: TaxRate;
+  supplyChannel?: Reference;
+  distributionChannel: Reference;
+  discountedPricePerQuantity: DiscountedLineItemPriceForQuantity[];
+  priceMode: LineItemPriceMode;
+  lineItemMode: LineItemMode;
+  custom?: CustomFields;
+  shippingDetails?: ItemShippingDetails;
+}
+
+export interface CustomLineItem {
+  id: string;
+  name: LocalizedString;
+  money: BaseMoney;
+  taxedPrice?: TaxedItemPrice;
+  totalPrice: Money;
+  slug: string;
+  quantity: Number;
+  state: ItemState[];
+  taxCategory?: Reference;
+  taxRate?: TaxRate;
+  discountedPricePerQuantit: DiscountedLineItemPriceForQuantity[];
+  custom?: CustomFields;
+  shippingDetails?: ItemShippingDetails;
+}
+
+export type TaxMode = 'Platform' | 'External' | 'ExternalAmount' | 'Disabled'
+
+export interface TaxedPrice {
+  totalNet: Money;
+  totalGross: Money;
+  taxPortions: TaxPortion[];
+}
+
+export interface TaxPortion {
+  name?: string;
+  rate: Number; // a number in the range [0..1]
+  amount: Money;
+}
+
+export type RoundingMode = 'HalfEven' | 'HalfUp' | 'HalfDown';
+
+export type TaxCalculationMode = 'LineItemLevel' | 'UnitPriceLevel';
+
+export type ShipmentState = 'Shipped' | 'Ready' | 'Pending' | 'Delayed' | 'Partial' | 'Backorder';
+
+export type PaymentState = 'BalanceDue' | 'Failed' | 'Pending' | 'CreditOwed' | 'Paid';
+
+export interface ShippingInfo {
+  shippingMethodName: string;
+  price: Money;
+  shippingRate: ShippingRate;
+  taxedPrice?: TaxedItemPrice;
+  taxRate?: TaxRate;
+  taxCategory?: Reference;
+  shippingMethod?: Reference;
+  deliveries: Delivery[];
+  discountedPrice?: DiscountedLineItemPrice;
+  shippingMethodState: ShippingMethodState;
+}
+
+export type Set<T> = T[];
+
+export interface SyncInfo {
+  channel: Reference;
+  externalId?: string;
+  syncedAt: DateTime;
+}
+
+export interface ReturnInfo {
+  items: ReturnItem[];
+  returnTrackingId: string;
+  returnDate: DateTime;
+}
+
+export interface DiscountCodeInfo {
+  discountCode: Reference;
+  state?: DiscountCodeState;
+}
+
+export interface PaymentInfo {
+  payments: Reference[]; // to Payments
+}
+
+export type InventoryMode = 'TrackOnly' | 'ReserveOnOrder' | 'None';
+
+export type ShippingRateInput = ClassificationShippingRateInput | ScoreShippingRateInput;
+
+export interface ClassificationShippingRateInput {
+  type: "Classification";
+  key: string;
+  label: LocalizedString;
+}
+
+export interface ScoreShippingRateInput {
+  type: "Score";
+  score: Number;
+}
+
+export type CartOrigin = 'Customer' | 'Merchant';
+
+export interface TaxedItemPrice {
+  totalNet: Money;
+  totalGross: Money;
+}
+
+export interface ItemState {
+  quantity: number;
+  state: Reference; // to a State
+}
+
+export interface DiscountedLineItemPriceForQuantity {
+quantity: number;
+discountedPrice: DiscountedLineItemPrice;
+}
+
+export type LineItemPriceMode = 'Standard' | 'GiftLineItem';
+
+export type LineItemMode = 'Standard' | 'GiftLineItem';
+
+export interface ItemShippingDetails {
+  targets: ItemShippingTarget[];
+  valid: boolean;
+}
+
+export interface ShippingRate {
+  price: Money;
+  freeAbove?: Money;
+  tiers: ShippingRatePriceTier[];
+  isMatching: boolean;
+}
+
+export interface Delivery {
+id: string;
+createdAt: DateTime;
+items: DeliveryItem[];
+parcels: Parcel[];
+address?: Address;
+}
+
+export interface DiscountedLineItemPrice {
+  value: BaseMoney;
+  includedDiscounts: DiscountedLineItemPortion[];
+}
+
+export interface DiscountedLineItemPortion {
+  discount: Reference; // to a CartDiscount
+  discountedAmount: BaseMoney;
+}
+
+export type ShippingMethodState = 'DoesNotMatchCart' | 'MatchesCart';
+
+export type ReturnItem = LineItemReturnItem | CustomLineItemReturnItem;
+
+export interface LineItemReturnItem {
+  id: string;
+  type: LineItemReturnItem;
+  quantity: number;
+  lineItemId: string;
+  comment: string;
+  shipmentState: ReturnShipmentState;
+  paymentState: ReturnPaymentState;
+  lastModifiedAt: DateTime;
+  createdAt: DateTime;
+}
+
+export interface CustomLineItemReturnItem {
+  id: string;
+  type: CustomLineItemReturnItem;
+  quantity: number;
+  customLineItemId: string;
+  comment: string;
+  shipmentState: ReturnShipmentState;
+  paymentState: ReturnPaymentState;
+  lastModifiedAt: DateTime;
+  createdAt: DateTime;
+}
+
+export type DiscountCodeState = 'NotActive' | 'NotValid' | 'DoesNotMatchCart' | 'MatchesCart' | 'MaxApplicationReached' | 'ApplicationStoppedByPreviousDiscount';
+
+export interface ItemShippingTarget {
+  addressKey: string;
+  quantity: number;
+}
+
+export type ShippingRatePriceTier = CartValue | CartClassification | CartScore;
+
+export interface CartValue {
+  type: "CartValue";
+  minimumCentAmount: number;
+  price: Money;
+  isMatching?: boolean;
+}
+
+export interface CartClassification {
+  type: "CartClassification";
+  value: string;
+  price: Money;
+  isMatching?: boolean;
+}
+
+export interface CartScore {
+  type: "CartScore";
+  score: number;
+  price: Money;
+  isMatching?: boolean;
+}
+
+export interface DeliveryItem {
+  id: string; // ID of a LineItem or a CustomLineItem
+  quantity: number;
+}
+
+export interface Parcel {
+  id: string;
+  createdAt: DateTime;
+  measurements?: ParcelMeasurements;
+  trackingData?: TrackingData;
+  items?: DeliveryItem;
+}
+
+export type ReturnShipmentState = 'Advised' | 'Returned' | 'BackInStock' | 'Unusable';
+
+export type ReturnPaymentState = 'NonRefundable' | 'Initial' | 'Refunded' | 'NotRefunded';
+
+export interface ParcelMeasurements {
+  heightInMillimeter: number;
+  lengthInMillimeter: number;
+  widthInMillimeter: number;
+  weightInGram: number;
+}
+
+export interface TrackingData {
+  trackingId?: string;
+  carrier?: string;
+  provider?: string;
+  providerTransaction?: string;
+  isReturn?: boolean;
 }
