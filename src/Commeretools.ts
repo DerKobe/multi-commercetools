@@ -777,6 +777,22 @@ export class Commercetools {
     );
   }
 
+  public async fetchSubscriptionByKey(key: string): Promise<Subscription> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().subscriptions.byKey(key).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => (response.body as Subscription))
+    );
+  }
+
   public async createSubscription(subscriptionDraft: SubscriptionDraft): Promise<Subscription> {
     await this.initClient();
 
@@ -794,8 +810,10 @@ export class Commercetools {
     );
   }
 
-  public async deleteSubscription(id: string, version: number): Promise<void> {
+  public async deleteSubscription(subscription: Subscription): Promise<void> {
     await this.initClient();
+
+    const { id, version } = subscription;
 
     const deleteRequest = {
       uri: this.request().subscriptions.byId(id).withVersion(version).build(),
