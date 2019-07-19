@@ -5,11 +5,11 @@ import { createHttpMiddleware } from '@commercetools/sdk-middleware-http';
 import { createQueueMiddleware } from '@commercetools/sdk-middleware-queue';
 import 'isomorphic-fetch';
 import {
-  AddAttributeAction, Category, Channel, ChannelDraft, CustomObject,
-  CustomObjectDraft, CustomType, CustomTypeDraft, Entity, Extension,
-  ExtensionDraft, InventoryEntry, InventoryEntryDraft, Order, PagedQueryResult,
-  Product, ProductDraft, ProductType, ProductTypeDraft, Sort, Subscription,
-  SubscriptionDraft, TaxCategory, TaxCategoryDraft, UpdateOrderAction
+  Category, Channel, ChannelDraft, CustomObject, CustomObjectDraft,
+  CustomType, CustomTypeDraft, Entity, Extension, ExtensionDraft,
+  InventoryEntry, InventoryEntryDraft, Order, PagedQueryResult, Product,
+  ProductDraft, ProductType, ProductTypeDraft, Sort, Subscription, SubscriptionDraft,
+  TaxCategory, TaxCategoryDraft, UpdateAction, UpdateOrderAction
 } from './types';
 
 type CommercetoolsConfigGetter = () => Promise<CommercetoolsConfig>;
@@ -538,7 +538,7 @@ export class Commercetools {
     );
   }
 
-  public async updateProductType(keyOrProductType, actions: AddAttributeAction[]): Promise<void> {
+  public async updateProductType(keyOrProductType, actions: UpdateAction[]): Promise<void> {
     await this.initClient();
 
     const { key, version } = await this.resolveKeyAndVersion(keyOrProductType, this.fetchProductTypeByKey);
