@@ -569,12 +569,17 @@ export interface ExtensionDraft {
   timeoutInMs?: number;
 }
 
-export type Destination = HttpDestination | AwsLambdaDestination;
+export type Destination = HttpDestination | AzureServiceBusDestination | AwsLambdaDestination;
 
 export interface HttpDestination {
-  type:"HTTP";
+  type: "HTTP";
   url: string;
   authentication?: HttpDestinationAuthentication;
+}
+
+export interface AzureServiceBusDestination {
+  type: "AzureServiceBus";
+  connectionString: string;
 }
 
 export interface AwsLambdaDestination {
