@@ -621,6 +621,22 @@ export class Commercetools {
 
   // --- CustomTypes ---
 
+  public async fetchCustomTypeByKey(key: string): Promise<CustomType> {
+    await this.initClient();
+
+    const fetchRequest = {
+      uri: this.request().types.byKey(key).build(),
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    return (
+      this.client
+        .execute(fetchRequest)
+        .then(response => response.body)
+    );
+  }
+
   public async fetchCustomTypes(page: number, perPage: number): Promise<PagedQueryResult<CustomType>> {
     await this.initClient();
 
@@ -654,8 +670,10 @@ export class Commercetools {
     );
   }
 
-  public async deleteCustomType(id: string, version: number): Promise<void> {
+  public async deleteCustomType(customType: CustomType): Promise<void> {
     await this.initClient();
+
+    const { id, version } = customType;
 
     const deleteRequest = {
       uri: this.request().types.byId(id).withVersion(version).build(),
