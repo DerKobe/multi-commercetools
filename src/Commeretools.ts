@@ -309,8 +309,10 @@ export class Commercetools {
     );
   }
 
-  public async deleteInventoryEntry(id: string, version: number): Promise<void> {
+  public async deleteInventoryEntry(entry: InventoryEntry): Promise<void> {
     await this.initClient();
+
+    const { id, version } = entry;
 
     const deleteRequest = {
       uri: this.request().inventory.byId(id).withVersion(version).build(),
@@ -318,14 +320,7 @@ export class Commercetools {
       headers: this.headers,
     };
 
-    return (
-      this.client
-        .execute(deleteRequest)
-        .catch(error => {
-          console.dir(error, { depth: null });
-          throw error;
-        })
-    );
+    return this.client.execute(deleteRequest);
   }
 
   public async fetchInventoryEntriesByChannelId(channelId: string): Promise<PagedQueryResult<InventoryEntry>> {
