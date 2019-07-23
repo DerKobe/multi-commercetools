@@ -665,7 +665,7 @@ export enum OrderState {
   Confirmed = 'Confirmed',
   Completed = 'Completed',
   Cancelled = 'Cancelled'
-};
+}
 
 export interface ChangeOrderStateAction {
   action: "changeOrderState"
