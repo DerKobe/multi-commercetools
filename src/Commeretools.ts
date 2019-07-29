@@ -673,7 +673,7 @@ export class Commercetools {
   public async updateCustomTypeByKey(key: string, actions: UpdateAction[]): Promise<CustomType> {
     await this.initClient();
 
-    const customType = await this.resolveKeyAndVersion(key, this.fetchCustomTypeByKey);
+    const customType = await this.resolveKeyAndVersion(key, this.fetchCustomTypeByKey.bind(this));
 
     const postRequest = {
       uri: this.request().types.byKey(key).build(),
