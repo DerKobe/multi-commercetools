@@ -541,7 +541,7 @@ export class Commercetools {
   public async updateProductType(keyOrProductType, actions: UpdateAction[]): Promise<void> {
     await this.initClient();
 
-    const { key, version } = await this.resolveKeyAndVersion(keyOrProductType, this.fetchProductTypeByKey);
+    const { key, version } = await this.resolveKeyAndVersion(keyOrProductType, this.fetchProductTypeByKey.bind(this));
 
     const updateRequest = {
       uri: this.request().productTypes.byKey(key).withVersion(version).build(),
@@ -556,7 +556,7 @@ export class Commercetools {
   public async deleteProductType(keyOrProductType): Promise<void> {
     await this.initClient();
 
-    const { key, version } = await this.resolveKeyAndVersion(keyOrProductType, this.fetchProductTypeByKey);
+    const { key, version } = await this.resolveKeyAndVersion(keyOrProductType, this.fetchProductTypeByKey.bind(this));
 
     const createRequest = {
       uri: this.request().productTypes.byKey(key).withVersion(version).build(),
@@ -909,7 +909,7 @@ export class Commercetools {
   public async deleteTaxCategory(key: string): Promise<void> {
     await this.initClient();
 
-    const { version } = await this.resolveKeyAndVersion(key, this.fetchTaxCategoryByKey);
+    const { version } = await this.resolveKeyAndVersion(key, this.fetchTaxCategoryByKey.bind(this));
 
     await this.initClient();
 
